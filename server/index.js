@@ -1,6 +1,9 @@
+const path = require("path");
 const express = require("express");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
+const logger = require("morgan");
+const favicon = require("serve-favicon");
 
 const handlebars = exphbs.create({
   helpers: {
@@ -15,15 +18,18 @@ const server = {
       .engine("handlebars", handlebars.engine)
       .set("view engine", "handlebars")
 
+      .use(logger("dev"))
+      .use(favicon(path.resolve(__dirname, "1f4dc.png")))
+
       .use(express.urlencoded({ extended: true }))
       .use(express.json())
 
-      .use((req, res, next) => {
-        console.log(
-          `${req.method} ${req.url} ${req.headers["content-type"] || ""}`
-        );
-        next();
-      })
+      // .use((req, res, next) => {
+      //   console.log(
+      //     `${req.method} ${req.url} ${req.headers["content-type"] || ""}`
+      //   );
+      //   next();
+      // })
 
       .use("/api", require("./apiRoutes"))
       .use("/", require("./htmlRoutes"));

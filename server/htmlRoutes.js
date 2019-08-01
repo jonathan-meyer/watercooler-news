@@ -6,6 +6,7 @@ const router = express.Router();
 router
   .use("/bootstrap", express.static(path.resolve("node_modules", "bootstrap")))
   .use("/jquery", express.static(path.resolve("node_modules", "jquery")))
+  .use("/popper.js", express.static(path.resolve("node_modules", "popper.js")))
   .use(
     "/jquery-validation",
     express.static(path.resolve("node_modules", "jquery-validation"))
