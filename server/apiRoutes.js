@@ -5,7 +5,7 @@ const router = express.Router();
 
 router
   // default /api route that simply reutrns the current time
-  .get("/", (req, res) => res.json({ now: moment() }))
+  .get("/", (req, res) => res.status(404).json("Nothing Here 🙉️🙈️🙊️"))
 
   // model controllers
   .use("/articles", require("./articleController"))

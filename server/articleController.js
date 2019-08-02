@@ -24,7 +24,7 @@ router.get("/scrape", (req, res) => {
         list.push({
           headline: h2.text(),
           summary: p.text(),
-          link: link,
+          url: link,
           key: crypto
             .createHash("md5")
             .update(link, "utf8")
@@ -51,17 +51,23 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  db.Article.findById(req.params.id, (err, data) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      if (data) {
-        res.json(data);
+  db.Article.findById(req.params.id)
+    .populate("comments")
+    .exec((err, data) => {
+      if (err) {
+        if (err.kind === "ObjectId") {
+          res.sendStatus(404);
+        } else {
+          res.status(500).json(err);
+        }
       } else {
-        res.sendStatus(404);
+        if (data) {
+          res.json(data);
+        } else {
+          res.sendStatus(404);
+        }
       }
-    }
-  });
+    });
 });
 
 router.post("/", (req, res) => {
