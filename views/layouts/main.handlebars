@@ -4,20 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Water Cooler News</title>
 
-    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-toolkit@5.0.3/extras/css/joypixels.min.css" />
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/main.css">
 
-    <script src="/jquery/dist/jquery.js"></script>
-    <script src="/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/popper.js/dist/umd/popper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-toolkit@5.0.3/lib/js/joypixels.min.js"></script>
+    <script src="/moment/moment.min.js"></script>
+    <script src="/axios/axios.min.js"></script>
+    <script src="/jquery/jquery.min.js"></script>
+    <script src="/jquery-validation/jquery.validate.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/popper.js/umd/popper.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/main.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        {{{body}}}
+    <div class="container py-2">
+        <div class="card">
+            <div class="card-header">
+                <h1>{{emoji "🚰"}} Water Cooler News</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {{#bread crumbs}}<li class="breadcrumb-item"><a href="{{url}}">{{label}}</a></li>{{/bread}}
+                        {{#last crumbs}}<li class="breadcrumb-item active" aria-current="page">{{label}}</li>{{/last}}
+                    </ol>
+                </nav>
+            </div>
+            <div class="card-body">
+                {{{body}}}
+            </div>
+            <div class="card-footer">
+                <div class="time-display"></div>
+            </div>
+        </div>
     </div>
 </body>
 

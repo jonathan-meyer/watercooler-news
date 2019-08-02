@@ -4,11 +4,24 @@ const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const favicon = require("serve-favicon");
+const http = require("http");
+const io = require("socket.io");
 
 const handlebars = exphbs.create({
   helpers: {
     gtOne: (value, opts) => (value > 1 ? opts.fn() : undefined),
-    json: (value, opts) => JSON.stringify(value)
+    json: (value, opts) => JSON.stringify(value, null, 2),
+    emoji: value => value,
+    bread: (context, options) =>
+      context
+        .slice(0, -1)
+        .map(item => options.fn(item))
+        .join(""),
+    last: (context, options) =>
+      context
+        .slice(-1)
+        .map(item => options.fn(item))
+        .join(";")
   }
 });
 
@@ -24,13 +37,6 @@ const server = {
       .use(express.urlencoded({ extended: true }))
       .use(express.json())
 
-      // .use((req, res, next) => {
-      //   console.log(
-      //     `${req.method} ${req.url} ${req.headers["content-type"] || ""}`
-      //   );
-      //   next();
-      // })
-
       .use("/api", require("./apiRoutes"))
       .use("/", require("./htmlRoutes"));
 
@@ -39,7 +45,8 @@ const server = {
       .then(() => {
         console.log("[Connected to DB]");
 
-        app
+        const server = http
+          .createServer(app)
           .listen(port, () => {
             console.log(`[Listening to port ${port}]`);
           })
@@ -50,6 +57,14 @@ const server = {
               console.log("[Disconnected from DB]");
             });
           });
+
+        io(server).on("connection", socket => {
+          console.log(`socket.io connected [${socket.json.id}]`);
+
+          setInterval(() => {
+            socket.emit("time", Date.now());
+          }, 1000);
+        });
       })
       .catch(err => console.error(err));
   }

@@ -5,9 +5,8 @@ const Schema = mongoose.Schema;
 module.exports = mongoose.model(
   "Comment",
   new Schema({
-    author: String,
-    text: String,
-    article: Schema.Types.ObjectId,
+    author: { type: String, required: true },
+    text: { type: String, required: true },
     date: {
       type: Date,
       default: Date.now()
