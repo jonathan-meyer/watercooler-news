@@ -8,9 +8,9 @@ const db = require("../models");
 const router = express.Router();
 
 router.get("/scrape", (req, res) => {
-  const url = "https://www.nytimes.com/section/us";
+  const base = "https://www.nytimes.com/section/us";
   axios
-    .get(url)
+    .get(base)
     .then(({ data }) => {
       let $ = cheerio.load(data);
       let list = [];
@@ -19,20 +19,32 @@ router.get("/scrape", (req, res) => {
         const a = $(this).find("div > div > a");
         const h2 = a.find("h2");
         const p = a.find("p");
-        const link = new URL(a.attr("href"), url).toJSON();
+        const url = new URL(a.attr("href"), base).toJSON();
+        const key = crypto
+          .createHash("md5")
+          .update(url, "utf8")
+          .digest("hex");
 
-        list.push({
-          headline: h2.text(),
-          summary: p.text(),
-          url: link,
-          key: crypto
-            .createHash("md5")
-            .update(link, "utf8")
-            .digest("hex")
-        });
+        list.push(
+          db.Article.findOneAndUpdate(
+            { key },
+            {
+              headline: h2.text(),
+              summary: p.text(),
+              url,
+              key
+            },
+            { new: true, upsert: true }
+          ).exec()
+        );
       });
 
-      res.json(list);
+      Promise.all(list)
+        .then(data => res.json(data))
+        .catch(err => {
+          console.log({ err });
+          res.status(500).json({ error: err.message });
+        });
     })
     .catch(err => {
       console.log({ err });

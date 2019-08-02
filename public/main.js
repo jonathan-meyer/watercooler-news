@@ -9,9 +9,7 @@ $(function() {
       moment(date).format("dddd, MMMM Do YYYY, h:mm:ss a")
     );
   });
-
-  // socket.on("connect", function() {});
-
+  
   $("form").on("submit", function(e) {
     e.preventDefault();
     console.log($(this).serializeArray());
@@ -20,7 +18,7 @@ $(function() {
   if ($(".article-list").length > 0) {
     console.log("load article list...");
 
-    axios("/api/articles")
+    axios("/api/articles/scrape")
       .then(function(res) {
         $(".article-list").empty();
 
