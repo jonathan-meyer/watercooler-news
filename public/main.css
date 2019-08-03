@@ -2,3 +2,13 @@
   text-decoration: none;
 }
 
+.notify-item {
+  position: relative;
+  display: inline-block;
+}
+
+.notify-badge {
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+}

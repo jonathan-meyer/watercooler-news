@@ -10,6 +10,41 @@ $(function() {
     );
   });
 
+  function commentLink(article_id, article_comment_count) {
+    return $("<a>")
+      .addClass(" mr-2")
+      .attr({
+        href: "/article/" + article_id,
+        title: "comment on the article"
+      })
+      .append(
+        $("<span>")
+          .addClass("notify-item")
+          .append(
+            article_comment_count > 0 &&
+              $("<span>")
+                .addClass("notify-badge badge badge-pill badge-danger")
+                .text(article_comment_count),
+            joypixels.toImage(":speech_balloon:")
+          )
+      );
+  }
+
+  function readLink(article_url) {
+    return $("<a>")
+      .addClass(" mr-2")
+      .attr({
+        href: article_url,
+        target: "_blank",
+        title: "read the whole article"
+      })
+      .append(joypixels.toImage(":book:"));
+  }
+
+  function whenScraped(date) {
+    return $("<span>").text("[Scraped " + moment(date).calendar() + "]");
+  }
+
   function addComment(comment) {
     $(".comment-list").append(
       $("<li>")
@@ -71,24 +106,15 @@ $(function() {
               .append(
                 $("<h4>").text(article.headline),
                 $("<div>")
-                  .addClass("text-muted")
-                  .text(article.summary),
-                $("<a>")
-                  .attr({
-                    href: article.url,
-                    target: "_blank",
-                    title: "read the whole article"
-                  })
-                  .append(joypixels.toImage(":book:")),
-                $("<a>")
-                  .attr({
-                    href: "/article/" + article._id,
-                    title: "comment on the article"
-                  })
-                  .append(joypixels.toImage(":speech_balloon:")),
-                $("<span>")
-                  .addClass("text-muted")
-                  .text("[" + moment(article.createdAt).calendar() + "]")
+                  .addClass("badge badge-light")
+                  .append(
+                    readLink(article.url),
+                    commentLink(article._id, article.comments.length),
+                    whenScraped(article.createdAt)
+                  ),
+                $("<div>")
+                  .addClass("alert alert-dark")
+                  .text(article.summary)
               )
           );
         });
@@ -111,18 +137,11 @@ $(function() {
         $(".article").append(
           $("<h4>").text(article.headline),
           $("<div>")
-            .addClass("text-muted")
-            .text(article.summary),
-          $("<a>")
-            .attr({
-              href: article.url,
-              target: "_blank",
-              title: "read the whole article"
-            })
-            .append(joypixels.toImage(":book:")),
-          $("<span>")
-            .addClass("text-muted")
-            .text("[" + moment(article.createdAt).calendar() + "]")
+            .addClass("badge badge-light")
+            .append(readLink(article.url), whenScraped(article.createdAt)),
+          $("<div>")
+            .addClass("alert alert-dark")
+            .text(article.summary)
         );
 
         $.each(comments, function() {
