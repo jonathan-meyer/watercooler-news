@@ -17,8 +17,8 @@ router.get("/scrape", (req, res) => {
 
       $("#stream-panel > div > ol > li").each(function() {
         const a = $(this).find("div > div > a");
-        const h2 = a.find("h2");
-        const p = a.find("p");
+        const h2 = a.children("h2");
+        const p = a.children("p");
         const url = new URL(a.attr("href"), base).toJSON();
         const key = crypto
           .createHash("md5")
