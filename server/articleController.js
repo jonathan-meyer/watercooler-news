@@ -82,12 +82,24 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
-  db.Article.create(req.body, (err, data) => {
+router.post("/:id/comment", (req, res) => {
+  db.Comment.create(req.body, (err, comment) => {
     if (err) {
       res.status(500).json(err);
     } else {
-      res.json(data);
+      db.Article.update(
+        { _id: req.params.id },
+        {
+          $push: { comments: comment._id }
+        },
+        (err, writeOpResult) => {
+          if (err) {
+            res.status(500).json(err);
+          } else {
+            res.json(comment);
+          }
+        }
+      );
     }
   });
 });
