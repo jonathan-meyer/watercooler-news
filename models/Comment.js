@@ -4,12 +4,11 @@ const Schema = mongoose.Schema;
 
 module.exports = mongoose.model(
   "Comment",
-  new Schema({
-    author: { type: String, required: true },
-    text: { type: String, required: true },
-    date: {
-      type: Date,
-      default: Date.now()
-    }
-  })
+  new Schema(
+    {
+      author: { type: String, required: true },
+      text: { type: String, required: true }
+    },
+    { timestamps: {} }
+  )
 );

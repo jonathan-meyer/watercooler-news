@@ -18,7 +18,7 @@ $(function() {
           $("<div>")
             .addClass("text-muted")
             .append(
-              $("<span>").text(moment(comment.date).calendar()),
+              $("<span>").text(moment(comment.createdAt).calendar()),
               $("<span>")
                 .addClass("mx-1")
                 .text("by"),
@@ -85,7 +85,10 @@ $(function() {
                     href: "/article/" + article._id,
                     title: "comment on the article"
                   })
-                  .append(joypixels.toImage(":speech_balloon:"))
+                  .append(joypixels.toImage(":speech_balloon:")),
+                $("<span>")
+                  .addClass("text-muted")
+                  .text("[" + moment(article.createdAt).calendar() + "]")
               )
           );
         });
@@ -116,7 +119,10 @@ $(function() {
               target: "_blank",
               title: "read the whole article"
             })
-            .append(joypixels.toImage(":book:"))
+            .append(joypixels.toImage(":book:")),
+          $("<span>")
+            .addClass("text-muted")
+            .text("[" + moment(article.createdAt).calendar() + "]")
         );
 
         $.each(comments, function() {
