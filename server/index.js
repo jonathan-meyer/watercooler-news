@@ -8,14 +8,16 @@ const http = require("http");
 const io = require("socket.io");
 const joypixels = require("emoji-toolkit");
 
-joypixels.imageTitleTag = false;
-joypixels.emojiSize = 64;
+mongoose.set("useFindAndModify", false);
 
 const handlebars = exphbs.create({
   helpers: {
-    gtOne: (value, opts) => (value > 1 ? opts.fn() : undefined),
-    json: (value, opts) => JSON.stringify(value, null, 2),
-    emoji: value => joypixels.toImage(value),
+    gtOne: (value, options) => (value > 1 ? options.fn() : undefined),
+    json: value => JSON.stringify(value, null, 2),
+    joypixels: options =>
+      Object.entries(options.hash).map(([key, value]) => {
+        joypixels[key] = value;
+      }) && joypixels.toImage(options.fn()),
     bread: (context, options) =>
       context
         .slice(0, -1)
