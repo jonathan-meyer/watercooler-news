@@ -7,6 +7,10 @@ router
   .use("/moment", express.static(path.resolve("node_modules", "moment", "min")))
   .use("/axios", express.static(path.resolve("node_modules", "axios", "dist")))
   .use(
+    "/emoji-toolkit",
+    express.static(path.resolve("node_modules", "emoji-toolkit"))
+  )
+  .use(
     "/bootstrap",
     express.static(path.resolve("node_modules", "bootstrap", "dist"))
   )

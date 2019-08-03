@@ -6,12 +6,16 @@ const logger = require("morgan");
 const favicon = require("serve-favicon");
 const http = require("http");
 const io = require("socket.io");
+const joypixels = require("emoji-toolkit");
+
+joypixels.imageTitleTag = false;
+joypixels.emojiSize = 64;
 
 const handlebars = exphbs.create({
   helpers: {
     gtOne: (value, opts) => (value > 1 ? opts.fn() : undefined),
     json: (value, opts) => JSON.stringify(value, null, 2),
-    emoji: value => value,
+    emoji: value => joypixels.toImage(value),
     bread: (context, options) =>
       context
         .slice(0, -1)
