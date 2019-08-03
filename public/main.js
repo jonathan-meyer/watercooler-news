@@ -9,10 +9,50 @@ $(function() {
       moment(date).format("dddd, MMMM Do YYYY, h:mm:ss a")
     );
   });
-  
+
+  function addComment(comment) {
+    $(".comment-list").append(
+      $("<li>")
+        .addClass("list-group-item")
+        .append(
+          $("<div>")
+            .addClass("text-muted")
+            .append(
+              $("<span>").text(moment(comment.createdAt).calendar()),
+              $("<span>")
+                .addClass("mx-1")
+                .text("by"),
+              $("<span>").text(comment.author)
+            ),
+          $("<div>")
+            .addClass("border rounded p-2 bg-light")
+            .text(comment.text)
+        )
+    );
+  }
+
   $("form").on("submit", function(e) {
     e.preventDefault();
-    console.log($(this).serializeArray());
+    var form = $(this);
+
+    form.validate();
+
+    var id = $(".article").data("id");
+    var body = form
+      .serializeArray()
+      .reduce((p, c) => ({ ...p, [c.name]: c.value }), {});
+
+    console.log({ id, body });
+
+    axios
+      .post(`/api/articles/${id}/comment`, body)
+      .then(function(res) {
+        addComment(res.data);
+        form.trigger("reset");
+      })
+      .catch(function(err) {
+        console.log(err.message);
+      });
   });
 
   if ($(".article-list").length > 0) {
@@ -45,7 +85,10 @@ $(function() {
                     href: "/article/" + article._id,
                     title: "comment on the article"
                   })
-                  .append(joypixels.toImage(":speech_balloon:"))
+                  .append(joypixels.toImage(":speech_balloon:")),
+                $("<span>")
+                  .addClass("text-muted")
+                  .text("[" + moment(article.createdAt).calendar() + "]")
               )
           );
         });
@@ -76,35 +119,15 @@ $(function() {
               target: "_blank",
               title: "read the whole article"
             })
-            .append(joypixels.toImage(":book:"))
+            .append(joypixels.toImage(":book:")),
+          $("<span>")
+            .addClass("text-muted")
+            .text("[" + moment(article.createdAt).calendar() + "]")
         );
 
-        if (Array.isArray(comments)) {
-          // $(".comment-list").empty();
-
-          $.each(comments, function() {
-            var comment = this;
-
-            $(".comment-list").append(
-              $("<li>")
-                .addClass("list-group-item")
-                .append(
-                  $("<div>")
-                    .addClass("text-muted")
-                    .append(
-                      $("<span>").text(moment(comment.date).calendar()),
-                      $("<span>")
-                        .addClass("mx-1")
-                        .text("by"),
-                      $("<span>").text(comment.author)
-                    ),
-                  $("<div>")
-                    .addClass("border rounded p-2 bg-light")
-                    .text(comment.text)
-                )
-            );
-          });
-        }
+        $.each(comments, function() {
+          addComment(this);
+        });
       })
       .catch(function(err) {
         if (err.response) {

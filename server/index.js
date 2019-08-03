@@ -6,12 +6,18 @@ const logger = require("morgan");
 const favicon = require("serve-favicon");
 const http = require("http");
 const io = require("socket.io");
+const joypixels = require("emoji-toolkit");
+
+mongoose.set("useFindAndModify", false);
 
 const handlebars = exphbs.create({
   helpers: {
-    gtOne: (value, opts) => (value > 1 ? opts.fn() : undefined),
-    json: (value, opts) => JSON.stringify(value, null, 2),
-    emoji: value => value,
+    gtOne: (value, options) => (value > 1 ? options.fn() : undefined),
+    json: value => JSON.stringify(value, null, 2),
+    joypixels: options =>
+      Object.entries(options.hash).map(([key, value]) => {
+        joypixels[key] = value;
+      }) && joypixels.toImage(options.fn()),
     bread: (context, options) =>
       context
         .slice(0, -1)
